@@ -36,6 +36,8 @@
 
 ## 🎯 Demo
 
+🌐 **Live Demo**: [https://breastcancer-gk.streamlit.app/](https://breastcancer-gk.streamlit.app/)
+
 The dashboard provides four main sections:
 
 | Tab | Description |
