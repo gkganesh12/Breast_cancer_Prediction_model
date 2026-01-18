@@ -36,7 +36,7 @@
 
 ## 🎯 Demo
 
-The dashboard provides four main sections:
+The dashboard provides four main sections: https://breastcancer-gk.streamlit.app/
 
 | Tab | Description |
 |-----|-------------|
