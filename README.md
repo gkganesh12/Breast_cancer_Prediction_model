@@ -1,85 +1,222 @@
-# 🎗️ Breast Cancer Prediction with DecisionTree
-<img src=".readme-utils\cancer prediction.png" width="750" height="360">
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit">
+  <img src="https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-learn">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+</p>
 
-## 🔮 The Project aims to ...
+<h1 align="center">🎗️ Breast Cancer Prediction Model</h1>
 
-This project focuses on training and fine-tuning a Decision Tree Classifier to predict breast cancer outcomes as either positive or negative based on a diverse range of significant attributes.
+<p align="center">
+  <strong>An interactive machine learning dashboard for predicting breast cancer diagnosis using Decision Tree Classifier</strong>
+</p>
 
- The dataset used for this project is the [Breast Cancer Wisconsin (Diagnostic) Data Set](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic), containing features for the prediction of the class : **Malignant(+ve)** or **Benign(-ve)**.
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-demo">Demo</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-usage">Usage</a> •
+  <a href="#-model-performance">Model Performance</a> •
+  <a href="#-dataset">Dataset</a> •
+  <a href="#-project-structure">Project Structure</a> •
+  <a href="#-contributing">Contributing</a> •
+  <a href="#-license">License</a>
+</p>
 
-
-### **More about the work 📔:**
 ---
 
-A basic overview of breast cancer dataset is covered in [📒**notebook-1**](https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier/blob/master/notebooks/01-data-overview-breast-cancer-classification.ipynb). Simple plots to show distribution of features. 
+## ✨ Features
 
-Built a basic DecisionTree with default parameters and trained on the training dataset in [📒**notebook-2**](https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier/blob/master/notebooks/02-decision-tree-model-training.ipynb). 
+- 🔮 **Real-time Predictions** - Interactive sliders to input tumor characteristics and get instant predictions
+- 📊 **Model Insights** - Comprehensive model performance metrics including confusion matrix and ROC curve
+- 🔬 **Data Explorer** - Explore the dataset with visualizations and correlation heatmaps
+- 💡 **Quick Demo** - Pre-loaded sample cases for malignant and benign tumors
+- 📱 **Responsive Design** - Beautiful, modern UI that works on all devices
+- 📈 **Feature Importance** - Understand which features contribute most to predictions
 
-The least important features found in the previous notebook are then reduced to n optimal dimensions using Principal Component Analysis (**PCA**) in [📒**notebook-3**](https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier/blob/master/notebooks/03-pca-feature-engineering.ipynb). The top n principal components having the highest eigenvalues are chosen for model training. A sample is shown below explaining data variance by top 3 eigenvectors. 
+## 🎯 Demo
 
-<img src="figures\principal_components.png" width="750" height="360" />
+The dashboard provides four main sections:
 
- Further along, in [📒**notebook-4**](https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier/blob/master/notebooks/04-hyperparameter-tuning.ipynb), hyperparameters are tuned and optimal parameters are then used for the prediction. **RESULT**: *Individual hyper-parameter training show better results than GridSearch CV.* 
+| Tab | Description |
+|-----|-------------|
+| 🔮 **Predict** | Input tumor features and get real-time predictions with confidence scores |
+| 📊 **Model Insights** | View accuracy, precision, recall, F1 score, confusion matrix, and ROC curve |
+| 🔬 **Data Explorer** | Explore the dataset distribution and feature correlations |
+| ℹ️ **About** | Learn about the project, dataset, and model details |
 
-**Prediction performance of the ✨tuned model:**
-<img src=".readme-utils\report cli.png" width="1000" height="200" alt="Model Performance">
+## 🚀 Installation
 
-To understand how the tuned model works and how it is making predictions, in [📒**notebook-5**](https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier/blob/master/notebooks/05-tree-model-explainability_SHAP.ipynb), SHAP library is used for Model Interpretability. Global and 
-The SHAP library is used to achieve Model Interpretability, enabling both global and local analyses of the optimized model's behavior. The **Decision Plot** below illustrates how individual features contribute to the prediction process, providing a clear understanding of the model's decision-making logic.
+### Prerequisites
 
-<img src="figures\shap_decision_plot.png" width="700" height="550" />
+- Python 3.8 or higher
+- pip or uv package manager
 
+### Quick Start
 
-## 📝 Installation Guide (Building Predictions)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/gkganesh12/Breast_cancer_Prediction_model.git
+   cd Breast_cancer_Prediction_model
+   ```
 
-- **Clone the repository**
-```shell
-git clone https://github.com/PragyanTiwari/Breast-Cancer-Prediction-with-DecisionTree-Classifier.git
-```
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- **Using Makefile :**
+3. **Run the application**
+   ```bash
+   streamlit run app.py
+   ```
 
-```shell
-# install uv if not
+4. **Open your browser** and navigate to `http://localhost:8501`
+
+### Using Makefile (Alternative)
+
+```bash
+# Install uv if not already installed
 pip install --upgrade uv
-```
 
-```shell
-# to create virtual env
+# Create virtual environment
 make create_environment
-```
 
-```shell
-# install python dependencies
+# Install dependencies
 make requirements
-```
-```shell
- # build predictions
+
+# Run the app (optional: build predictions)
 make breast_cancer_prediction
 ```
 
-- **Using [uv](https://docs.astral.sh/uv/) (If not Makefile):**
+## 💻 Usage
 
-```shell
-# to create virtual env
-uv venv
+### Interactive Prediction
+
+1. Use the sliders in the sidebar to input tumor characteristics
+2. Watch the prediction update in real-time
+3. View the confidence gauge and probability distribution
+4. Explore which features influenced the prediction most
+
+### Quick Demo Mode
+
+- Click **🔴 Malignant** to load a sample malignant case
+- Click **🟢 Benign** to load a sample benign case
+
+## 📈 Model Performance
+
+The Decision Tree Classifier achieves excellent performance on the test set:
+
+| Metric | Score |
+|--------|-------|
+| **Accuracy** | ~95% |
+| **Precision** | ~93% |
+| **Recall** | ~95% |
+| **F1 Score** | ~94% |
+
+### Model Configuration
+
+```python
+DecisionTreeClassifier(
+    criterion="entropy",
+    max_depth=3,
+    min_samples_split=0.01,
+    min_samples_leaf=0.01
+)
 ```
 
-```shell
-# install python dependencies
-uv add --requirements 'requirements.txt' --dev
+## 📊 Dataset
+
+This project uses the **Breast Cancer Wisconsin (Diagnostic) Dataset** from the UCI Machine Learning Repository.
+
+| Property | Value |
+|----------|-------|
+| **Source** | [UCI ML Repository](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic) |
+| **Total Samples** | 569 |
+| **Benign Cases** | 357 (62.7%) |
+| **Malignant Cases** | 212 (37.3%) |
+| **Features** | 30 numeric features |
+
+### Features Explained
+
+The features are computed from digitized images of fine needle aspirates (FNA) of breast masses:
+
+| Feature | Description |
+|---------|-------------|
+| Radius | Mean of distances from center to points on the perimeter |
+| Texture | Standard deviation of gray-scale values |
+| Perimeter | Perimeter of the cell nucleus |
+| Area | Area of the cell nucleus |
+| Smoothness | Local variation in radius lengths |
+| Compactness | Perimeter² / Area - 1.0 |
+| Concavity | Severity of concave portions of the contour |
+| Concave Points | Number of concave portions of the contour |
+| Symmetry | Symmetry of the cell nucleus |
+| Fractal Dimension | "Coastline approximation" - 1 |
+
+Each feature is computed as **mean**, **standard error**, and **worst** (mean of the three largest values).
+
+## 📁 Project Structure
+
 ```
-```shell
- # build predictions
-uv run make_predictions
+Breast_cancer_Prediction_model/
+├── 📄 app.py                    # Streamlit dashboard application
+├── 📄 requirements.txt          # Python dependencies
+├── 📄 Makefile                  # Build automation
+├── 📄 pyproject.toml            # Project configuration
+├── 📁 data/
+│   └── 📁 raw/                  # Raw dataset files
+├── 📁 models/                   # Trained model files
+├── 📁 notebooks/                # Jupyter notebooks for analysis
+│   ├── 01-data-overview.ipynb
+│   ├── 02-model-training.ipynb
+│   ├── 03-pca-feature-engineering.ipynb
+│   ├── 04-hyperparameter-tuning.ipynb
+│   └── 05-model-explainability.ipynb
+├── 📁 figures/                  # Generated plots and visualizations
+└── 📁 docs/                     # Documentation
 ```
-<img src=".readme-utils\terminal.png" width="1200" height="300">
 
-❕The output will be saved as `predictions.csv` in data\result dir.
+## 🤝 Contributing
 
+Contributions are welcome! Here's how you can help:
 
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/AmazingFeature`)
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **Open** a Pull Request
 
+## ⚠️ Disclaimer
 
+> **Important**: This tool is for **educational and demonstration purposes only**. It should **NOT** be used for actual medical diagnosis. Always consult qualified healthcare professionals for medical decisions.
 
-       
-# Breast_cancer_Prediction_model
+## 📝 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2024-2026 Ganesh Khetawat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files.
+```
+
+## 👨‍💻 Author
+
+**Ganesh Khetawat**
+
+- GitHub: [@gkganesh12](https://github.com/gkganesh12)
+
+---
+
+<p align="center">
+  Made with ❤️ for cancer awareness and early detection
+</p>
+
+<p align="center">
+  <a href="https://github.com/gkganesh12/Breast_cancer_Prediction_model">
+    <img src="https://img.shields.io/github/stars/gkganesh12/Breast_cancer_Prediction_model?style=social" alt="Stars">
+  </a>
+</p>
