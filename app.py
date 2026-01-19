@@ -180,6 +180,12 @@ def main():
         st.error(f"Error loading data: {e}")
         st.info("Please ensure the dataset exists at: data/raw/breast-cancer-dataset.csv")
         return
+
+    # Initialize session state for history and current result
+    if "prediction_history" not in st.session_state:
+        st.session_state.prediction_history = []
+    if "last_result" not in st.session_state:
+        st.session_state.last_result = None
     
     # Tabs
     tab1, tab2, tab3, tab4 = st.tabs(["🔮 Predict", "📊 Model Insights", "🔬 Data Explorer", "ℹ️ About"])
@@ -233,85 +239,126 @@ def main():
                             value=stats["mean"],
                             key=f"slider_{feature}"
                         )
+            
+            st.divider()
+            
+            # Action Buttons
+            st.markdown("#### 🚀 Actions")
+            if st.button("🔍 Get Diagnosis", type="primary", use_container_width=True):
+                # Prepare input for prediction
+                input_df = pd.DataFrame([input_values])[feature_names]
+                input_scaled = scaler.transform(input_df)
+                
+                # Make prediction
+                pred = clf.predict(input_scaled)[0]
+                prob = clf.predict_proba(input_scaled)[0]
+                st.session_state.last_result = {
+                    "prediction": pred,
+                    "probability": prob,
+                    "values": input_values.copy(),
+                    "timestamp": pd.Timestamp.now().strftime("%H:%M:%S")
+                }
+            
+            if st.session_state.last_result:
+                if st.button("💾 Save to History", use_container_width=True):
+                    # Save current prediction to history
+                    hist_entry = {
+                        "Time": st.session_state.last_result["timestamp"],
+                        "Diagnosis": "Malignant" if st.session_state.last_result["prediction"] == "M" else "Benign",
+                        "Confidence": f"{max(st.session_state.last_result['probability'])*100:.1f}%",
+                    }
+                    # Add some key values for context
+                    hist_entry.update({k.replace("_mean", ""): v for k, v in st.session_state.last_result["values"].items() if "_mean" in k})
+                    
+                    st.session_state.prediction_history.insert(0, hist_entry)
+                    st.success("Result saved to history!")
         
         with col_main:
             st.markdown("### 🎯 Prediction Result")
             
-            # Prepare input for prediction
-            # Ensure columns are in the exact same order as used during training
-            input_df = pd.DataFrame([input_values])[feature_names]
-            input_scaled = scaler.transform(input_df)
-            
-            # Make prediction
-            prediction = clf.predict(input_scaled)[0]
-            probability = clf.predict_proba(input_scaled)[0]
-            
             # Display prediction
-            if prediction == "M":
-                prob_display = probability[1] * 100
-                st.markdown(f"""
-                <div class="prediction-box malignant">
-                    <h2>🔴 MALIGNANT</h2>
-                    <p style="font-size: 1.5rem;">Confidence: {prob_display:.1f}%</p>
-                </div>
-                """, unsafe_allow_html=True)
-                st.warning("⚠️ This prediction suggests the tumor may be malignant. Please consult a medical professional.")
-            else:
-                prob_display = probability[0] * 100
-                st.markdown(f"""
-                <div class="prediction-box benign">
-                    <h2>🟢 BENIGN</h2>
-                    <p style="font-size: 1.5rem;">Confidence: {prob_display:.1f}%</p>
-                </div>
-                """, unsafe_allow_html=True)
-                st.success("✅ This prediction suggests the tumor is likely benign.")
-            
-            # Probability gauge
-            st.markdown("#### Probability Distribution")
-            fig_gauge = go.Figure(go.Indicator(
-                mode="gauge+number",
-                value=probability[1] * 100,
-                domain={'x': [0, 1], 'y': [0, 1]},
-                title={'text': "Malignancy Probability"},
-                gauge={
-                    'axis': {'range': [0, 100], 'ticksuffix': '%'},
-                    'bar': {'color': "#ff4757"},
-                    'steps': [
-                        {'range': [0, 30], 'color': "#7bed9f"},
-                        {'range': [30, 70], 'color': "#ffa502"},
-                        {'range': [70, 100], 'color': "#ff6b81"}
-                    ],
-                    'threshold': {
-                        'line': {'color': "red", 'width': 4},
-                        'thickness': 0.75,
-                        'value': 50
+            if st.session_state.last_result:
+                res = st.session_state.last_result
+                prediction = res["prediction"]
+                probability = res["probability"]
+                
+                if prediction == "M":
+                    prob_display = probability[1] * 100
+                    st.markdown(f"""
+                    <div class="prediction-box malignant">
+                        <h2>🔴 MALIGNANT</h2>
+                        <p style="font-size: 1.5rem;">Confidence: {prob_display:.1f}%</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.warning("⚠️ This prediction suggests the tumor may be malignant. Please consult a medical professional.")
+                else:
+                    prob_display = probability[0] * 100
+                    st.markdown(f"""
+                    <div class="prediction-box benign">
+                        <h2>🟢 BENIGN</h2>
+                        <p style="font-size: 1.5rem;">Confidence: {prob_display:.1f}%</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.success("✅ This prediction suggests the tumor is likely benign.")
+                
+                # Probability gauge
+                st.markdown("#### Probability Distribution")
+                fig_gauge = go.Figure(go.Indicator(
+                    mode="gauge+number",
+                    value=probability[1] * 100,
+                    domain={'x': [0, 1], 'y': [0, 1]},
+                    title={'text': "Malignancy Probability"},
+                    gauge={
+                        'axis': {'range': [0, 100], 'ticksuffix': '%'},
+                        'bar': {'color': "#ff4757"},
+                        'steps': [
+                            {'range': [0, 30], 'color': "#7bed9f"},
+                            {'range': [30, 70], 'color': "#ffa502"},
+                            {'range': [70, 100], 'color': "#ff6b81"}
+                        ],
+                        'threshold': {
+                            'line': {'color': "red", 'width': 4},
+                            'thickness': 0.75,
+                            'value': 50
+                        }
                     }
-                }
-            ))
-            fig_gauge.update_layout(height=300)
-            st.plotly_chart(fig_gauge, use_container_width=True)
+                ))
+                fig_gauge.update_layout(height=300)
+                st.plotly_chart(fig_gauge, use_container_width=True)
+                
+                # Feature importance for this prediction
+                st.markdown("#### 🔍 Key Factors for This Prediction")
+                feature_importance = pd.DataFrame({
+                    'Feature': feature_names,
+                    'Importance': clf.feature_importances_
+                }).sort_values('Importance', ascending=False).head(10)
+                
+                fig_imp = px.bar(
+                    feature_importance,
+                    x='Importance',
+                    y='Feature',
+                    orientation='h',
+                    color='Importance',
+                    color_continuous_scale='RdYlGn_r'
+                )
+                fig_imp.update_layout(
+                    height=350,
+                    yaxis={'categoryorder': 'total ascending'},
+                    showlegend=False
+                )
+                st.plotly_chart(fig_imp, use_container_width=True)
+            else:
+                st.info("👈 Adjust the features and click 'Get Diagnosis' to see the result.")
             
-            # Feature importance for this prediction
-            st.markdown("#### 🔍 Key Factors for This Prediction")
-            feature_importance = pd.DataFrame({
-                'Feature': feature_names,
-                'Importance': clf.feature_importances_
-            }).sort_values('Importance', ascending=False).head(10)
-            
-            fig_imp = px.bar(
-                feature_importance,
-                x='Importance',
-                y='Feature',
-                orientation='h',
-                color='Importance',
-                color_continuous_scale='RdYlGn_r'
-            )
-            fig_imp.update_layout(
-                height=350,
-                yaxis={'categoryorder': 'total ascending'},
-                showlegend=False
-            )
-            st.plotly_chart(fig_imp, use_container_width=True)
+            # History Section
+            if st.session_state.prediction_history:
+                st.divider()
+                st.markdown("### 📜 Prediction History")
+                history_df = pd.DataFrame(st.session_state.prediction_history)
+                st.dataframe(history_df, use_container_width=True)
+                if st.button("🗑️ Clear History"):
+                    st.session_state.prediction_history = []
+                    st.rerun()
     
     # ==================== TAB 2: MODEL INSIGHTS ====================
     with tab2:
