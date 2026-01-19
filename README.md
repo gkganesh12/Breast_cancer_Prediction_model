@@ -27,12 +27,13 @@
 
 ## ✨ Features
 
-- 🔮 **Real-time Predictions** - Interactive sliders to input tumor characteristics and get instant predictions
-- 📊 **Model Insights** - Comprehensive model performance metrics including confusion matrix and ROC curve
+- 🔮 **Real-time Predictions** - Interactive sliders to input tumor characteristics
+- 🔍 **Manual Control** - "Get Diagnosis" button to trigger predictions only when you're ready
+- 📜 **Prediction History** - Save and compare different scenarios in a history table
+- 📊 **Model Insights** - Comprehensive performance metrics including confusion matrix and ROC curve
 - 🔬 **Data Explorer** - Explore the dataset with visualizations and correlation heatmaps
 - 💡 **Quick Demo** - Pre-loaded sample cases for malignant and benign tumors
-- 📱 **Responsive Design** - Beautiful, modern UI that works on all devices
-- 📈 **Feature Importance** - Understand which features contribute most to predictions
+- 📈 **Feature Importance** - Understand which factors contribute most to each decision
 
 ## 🎯 Demo
 
