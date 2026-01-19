@@ -193,20 +193,26 @@ def main():
             
             # Quick Demo Buttons
             st.markdown("#### 💡 Quick Demo")
-            demo_col1, demo_col2 = st.columns(2)
-            
-            # Initialize session state for feature values
-            if "feature_values" not in st.session_state:
-                st.session_state.feature_values = {f: feature_stats[f]["mean"] for f in ALL_FEATURES}
+            demo_col1, demo_col2, demo_col3 = st.columns(3)
             
             with demo_col1:
                 if st.button("🔴 Malignant", use_container_width=True):
-                    st.session_state.feature_values = get_sample_malignant(df)
+                    sample = get_sample_malignant(df)
+                    for f, val in sample.items():
+                        st.session_state[f"slider_{f}"] = val
                     st.rerun()
             
             with demo_col2:
                 if st.button("🟢 Benign", use_container_width=True):
-                    st.session_state.feature_values = get_sample_benign(df)
+                    sample = get_sample_benign(df)
+                    for f, val in sample.items():
+                        st.session_state[f"slider_{f}"] = val
+                    st.rerun()
+
+            with demo_col3:
+                if st.button("🔄 Reset", use_container_width=True):
+                    for f in ALL_FEATURES:
+                        st.session_state[f"slider_{f}"] = feature_stats[f]["mean"]
                     st.rerun()
             
             st.divider()
@@ -224,7 +230,7 @@ def main():
                             label,
                             min_value=stats["min"],
                             max_value=stats["max"],
-                            value=st.session_state.feature_values.get(feature, stats["mean"]),
+                            value=stats["mean"],
                             key=f"slider_{feature}"
                         )
         
@@ -232,7 +238,8 @@ def main():
             st.markdown("### 🎯 Prediction Result")
             
             # Prepare input for prediction
-            input_df = pd.DataFrame([input_values])
+            # Ensure columns are in the exact same order as used during training
+            input_df = pd.DataFrame([input_values])[feature_names]
             input_scaled = scaler.transform(input_df)
             
             # Make prediction
